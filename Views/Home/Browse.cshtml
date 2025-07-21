@@ -1,0 +1,403 @@
+@model IEnumerable<CatFactsWebApp.Models.ViewModels.CatFactViewModel>
+@{
+    ViewData["Title"] = "Przeglądaj Fakty";
+    var filter = ViewBag.Filter as CatFactsWebApp.Models.ViewModels.FilterViewModel;
+    var categories = ViewBag.Categories as IEnumerable<string>;
+}
+
+<style>
+    .filter-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .results-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .fact-grid {
+        display: grid;
+        gap: 20px;
+    }
+    
+    .fact-item {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 15px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .fact-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .fact-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .filter-form .form-control, .filter-form .form-select {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-form .form-control:focus, .filter-form .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-filter {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 80px 20px;
+        color: #64748b;
+    }
+    
+    .no-results i {
+        font-size: 5rem;
+        margin-bottom: 30px;
+        opacity: 0.3;
+    }
+    
+    @@media (max-width: 768px) {
+        .filter-card {
+            padding: 20px;
+        }
+        
+        .fact-item {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="results-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h1 class="h3 mb-2">
+                <i class="fas fa-search me-2"></i>
+                Przeglądaj Fakty o Kotach
+            </h1>
+            <p class="mb-0 opacity-75">
+                Znajdź interesujące Cię fakty używając filtrów poniżej
+            </p>
+        </div>
+        <div class="text-end">
+            <h2 class="h4 mb-0">@Model.Count()</h2>
+            <small class="opacity-75">znalezionych faktów</small>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-card">
+    <h4 class="mb-4">
+        <i class="fas fa-filter me-2 text-primary"></i>
+        Filtry Wyszukiwania
+    </h4>
+    
+    <form method="get" asp-action="Browse" class="filter-form">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="searchTerm" class="form-label fw-semibold">Szukaj w treści</label>
+                <input type="text" class="form-control" id="searchTerm" name="SearchTerm" 
+                       value="@filter?.SearchTerm" placeholder="Wpisz słowo kluczowe...">
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="category" class="form-label fw-semibold">Kategoria</label>
+                <select class="form-select" id="category" name="Category">
+                    <option value="">Wszystkie kategorie</option>
+                    @if (categories != null)
+                    {
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category" selected="@(filter?.Category == category)">
+                                @category
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="minRating" class="form-label fw-semibold">Minimalna ocena</label>
+                <select class="form-select" id="minRating" name="MinRating">
+                    <option value="">Dowolna</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i" selected="@(filter?.MinRating == i)">
+                            @i @(i == 1 ? "gwiazdka" : i < 5 ? "gwiazdki" : "gwiazdek")
+                        </option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="dateFrom" class="form-label fw-semibold">Data od</label>
+                <input type="date" class="form-control" id="dateFrom" name="DateFrom" 
+                       value="@filter?.DateFrom?.ToString("yyyy-MM-dd")">
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="dateTo" class="form-label fw-semibold">Data do</label>
+                <input type="date" class="form-control" id="dateTo" name="DateTo" 
+                       value="@filter?.DateTo?.ToString("yyyy-MM-dd")">
+            </div>
+            
+            <div class="col-md-3 mb-3 d-flex align-items-end">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="onlyFavorites" 
+                           name="OnlyFavorites" value="true" @(filter?.OnlyFavorites == true ? "checked" : "")>
+                    <label class="form-check-label fw-semibold" for="onlyFavorites">
+                        <i class="fas fa-heart text-danger me-1"></i>
+                        Tylko ulubione
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-3 flex-wrap">
+            <button type="submit" class="btn btn-filter">
+                <i class="fas fa-search me-2"></i>
+                Filtruj Fakty
+            </button>
+            
+            <a href="@Url.Action("Browse", "Home")" class="btn btn-outline-secondary">
+                <i class="fas fa-times me-2"></i>
+                Wyczyść Filtry
+            </a>
+            
+            <button type="button" class="btn btn-outline-primary" onclick="exportFilteredFacts()">
+                <i class="fas fa-download me-2"></i>
+                Eksportuj Wyniki
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Results Section -->
+@if (Model.Any())
+{
+    <div class="fact-grid">
+        @foreach (var fact in Model)
+        {
+            <div class="fact-item">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="flex-grow-1">
+                        @if (!string.IsNullOrEmpty(fact.Category))
+                        {
+                            <span class="badge rounded-pill mb-2" 
+                                  style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                @fact.Category
+                            </span>
+                        }
+                        
+                        <p class="fact-text fs-5 lh-base mb-3">@fact.Fact</p>
+                        
+                        <div class="d-flex align-items-center gap-4 flex-wrap text-muted">
+                            <small>
+                                <i class="fas fa-calendar me-1"></i>
+                                @fact.TimeAgo
+                            </small>
+                            
+                            <small>
+                                <i class="fas fa-text-width me-1"></i>
+                                @fact.Length znaków
+                            </small>
+                            
+                            @if (fact.Rating > 0)
+                            {
+                                <div class="text-warning">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fas fa-star@(i <= fact.Rating ? "" : "-o")"></i>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 ms-3">
+                        <button class="btn btn-sm @(fact.IsFavorite ? "btn-danger" : "btn-outline-danger")" 
+                                onclick="toggleFavorite(@fact.Id)" 
+                                title="@(fact.IsFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych")">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                    type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="#" onclick="rateFact(@fact.Id, @i)">
+                                            @for (int j = 1; j <= i; j++)
+                                            {
+                                                <i class="fas fa-star text-warning"></i>
+                                            }
+                                            @for (int j = i + 1; j <= 5; j++)
+                                            {
+                                                <i class="far fa-star text-muted"></i>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        
+                        <button class="btn btn-sm btn-outline-danger" 
+                                onclick="deleteFact(@fact.Id)" 
+                                title="Usuń fakt">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Back to Top Button -->
+    <div class="text-center mt-5">
+        <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <i class="fas fa-arrow-up me-2"></i>
+            Powrót na górę
+        </button>
+    </div>
+}
+else
+{
+    <div class="no-results">
+        <i class="fas fa-search"></i>
+        <h3 class="mb-3">Brak wyników</h3>
+        <p class="mb-4">
+            Nie znaleziono faktów spełniających podane kryteria.<br>
+            Spróbuj zmienić filtry lub 
+            <a href="#" onclick="fetchMultipleFacts(5)" class="text-decoration-none">
+                pobierz nowe fakty z API
+            </a>
+        </p>
+        
+        <a href="@Url.Action("Browse", "Home")" class="btn btn-primary">
+            <i class="fas fa-times me-2"></i>
+            Wyczyść Filtry
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        async function toggleFavorite(id) {
+            try {
+                const response = await fetch(`/Home/ToggleFavorite?id=${id}`, { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Nie udało się zaktualizować statusu ulubionego');
+                }
+            } catch (error) {
+                alert('Wystąpił błąd podczas aktualizacji');
+            }
+        }
+        
+        async function rateFact(id, rating) {
+            try {
+                const response = await fetch(`/Home/RateFact?id=${id}&rating=${rating}`, { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Nie udało się ocenić faktu');
+                }
+            } catch (error) {
+                alert('Wystąpił błąd podczas oceniania');
+            }
+        }
+        
+        async function deleteFact(id) {
+            if (!confirm('Czy na pewno chcesz usunąć ten fakt?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/Home/DeleteFact?id=${id}`, { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Nie udało się usunąć faktu');
+                }
+            } catch (error) {
+                alert('Wystąpił błąd podczas usuwania');
+            }
+        }
+        
+        function exportFilteredFacts() {
+            // Pobierz aktualne parametry filtrów z formularza
+            const form = document.querySelector('.filter-form');
+            const formData = new FormData(form);
+            
+            // Utwórz formularz do eksportu
+            const exportForm = document.createElement('form');
+            exportForm.method = 'POST';
+            exportForm.action = '/Home/ExportFacts';
+            
+            // Dodaj parametry filtrów do formularza eksportu
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    exportForm.appendChild(input);
+                }
+            }
+            
+            document.body.appendChild(exportForm);
+            exportForm.submit();
+            document.body.removeChild(exportForm);
+        }
+    </script>
+}

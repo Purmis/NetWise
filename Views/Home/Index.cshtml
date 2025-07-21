@@ -1,0 +1,374 @@
+@model CatFactsWebApp.Models.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Strona Główna";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 60px 40px;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fact-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    
+    .fact-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fact-content {
+        padding: 25px;
+    }
+    
+    .fact-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        color: #2d3748;
+    }
+    
+    .fact-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .rating-stars {
+        color: #fbbf24;
+    }
+    
+    .category-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .btn-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-icon:hover {
+        transform: scale(1.1);
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #2d3748;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    @@media (max-width: 768px) {
+        .hero-section {
+            padding: 40px 20px;
+        }
+        
+        .fact-content {
+            padding: 20px;
+        }
+        
+        .fact-meta {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .action-buttons {
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <div class="position-relative">
+        <h1 class="display-4 fw-bold mb-4">
+            <i class="fas fa-cat me-3"></i>
+            Witaj w Świecie Faktów o Kotach!
+        </h1>
+        <p class="lead mb-4">
+            Odkryj fascynujące fakty o naszych futrzanych przyjaciołach. 
+            Każdy fakt to nowa przygoda w świecie kotów!
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button class="btn btn-light btn-lg" onclick="fetchNewFact()">
+                <i class="fas fa-dice me-2"></i> Losuj Nowy Fakt
+            </button>
+            <button class="btn btn-outline-light btn-lg" onclick="fetchMultipleFacts(3)">
+                <i class="fas fa-layer-group me-2"></i> Pobierz 3 Fakty
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <i class="fas fa-database fa-2x text-primary mb-3"></i>
+            <h3 class="fw-bold text-primary">@Model.TotalFactsCount</h3>
+            <p class="text-muted mb-0">Zebrane Fakty</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <i class="fas fa-star fa-2x text-warning mb-3"></i>
+            <h3 class="fw-bold text-warning">@Model.AverageRating.ToString("F1")</h3>
+            <p class="text-muted mb-0">Średnia Ocena</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <i class="fas fa-heart fa-2x text-danger mb-3"></i>
+            <h3 class="fw-bold text-danger">@Model.FavoriteFacts.Count</h3>
+            <p class="text-muted mb-0">Ulubione Fakty</p>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Facts Section -->
+<div class="row">
+    <div class="col-lg-8">
+        <h2 class="section-title">
+            <i class="fas fa-clock me-2"></i>
+            Najnowsze Fakty
+        </h2>
+        
+        @if (Model.RecentFacts.Any())
+        {
+            @foreach (var fact in Model.RecentFacts)
+            {
+                <div class="fact-card">
+                    <div class="fact-content">
+                        <p class="fact-text">@fact.Fact</p>
+                        
+                        <div class="fact-meta">
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                @if (!string.IsNullOrEmpty(fact.Category))
+                                {
+                                    <span class="category-badge">@fact.Category</span>
+                                }
+                                
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    @fact.TimeAgo
+                                </small>
+                                
+                                <small class="text-muted">
+                                    <i class="fas fa-text-width me-1"></i>
+                                    @fact.Length znaków
+                                </small>
+                                
+                                @if (fact.Rating > 0)
+                                {
+                                    <div class="rating-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fas fa-star@(i <= fact.Rating ? "" : "-o")"></i>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-icon @(fact.IsFavorite ? "btn-danger" : "btn-outline-danger")" 
+                                        onclick="toggleFavorite(@fact.Id)" 
+                                        title="@(fact.IsFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych")">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-icon btn-outline-secondary dropdown-toggle" 
+                                            type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-star"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="rateFact(@fact.Id, @i)">
+                                                    @for (int j = 1; j <= i; j++)
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    }
+                                                    @for (int j = i + 1; j <= 5; j++)
+                                                    {
+                                                        <i class="far fa-star text-muted"></i>
+                                                    }
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Browse", "Home")" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search me-2"></i>
+                    Zobacz Wszystkie Fakty
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-cat"></i>
+                <h4>Brak faktów do wyświetlenia</h4>
+                <p>Kliknij "Losuj Nowy Fakt" aby rozpocząć!</p>
+            </div>
+        }
+    </div>
+    
+    <!-- Favorites Sidebar -->
+    <div class="col-lg-4">
+        <h3 class="section-title">
+            <i class="fas fa-heart me-2 text-danger"></i>
+            Ulubione Fakty
+        </h3>
+        
+        @if (Model.FavoriteFacts.Any())
+        {
+            @foreach (var fact in Model.FavoriteFacts)
+            {
+                <div class="fact-card">
+                    <div class="fact-content">
+                        <p class="fact-text" style="font-size: 0.95rem;">@fact.Fact</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">@fact.TimeAgo</small>
+                            @if (fact.Rating > 0)
+                            {
+                                <div class="rating-stars" style="font-size: 0.8rem;">
+                                    @for (int i = 1; i <= fact.Rating; i++)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state" style="padding: 40px 20px;">
+                <i class="fas fa-heart" style="font-size: 2rem;"></i>
+                <p class="mb-0">Brak ulubionych faktów</p>
+                <small class="text-muted">Kliknij serduszko przy faktach aby je polubić</small>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function toggleFavorite(id) {
+            try {
+                const response = await fetch(`/Home/ToggleFavorite?id=${id}`, { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Nie udało się zaktualizować statusu ulubionego');
+                }
+            } catch (error) {
+                alert('Wystąpił błąd podczas aktualizacji');
+            }
+        }
+        
+        async function rateFact(id, rating) {
+            try {
+                const response = await fetch(`/Home/RateFact?id=${id}&rating=${rating}`, { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Nie udało się ocenić faktu');
+                }
+            } catch (error) {
+                alert('Wystąpił błąd podczas oceniania');
+            }
+        }
+    </script>
+}

@@ -1,0 +1,315 @@
+@{
+    ViewData["Title"] = "O Aplikacji";
+}
+
+<style>
+    .hero-about {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 60px 40px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 30px;
+        height: 100%;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .tech-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 5px;
+        display: inline-block;
+    }
+    
+    .info-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+    
+    .solid-principle {
+        background: rgba(255, 255, 255, 0.95);
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    @@media (max-width: 768px) {
+        .hero-about {
+            padding: 40px 20px;
+        }
+        
+        .info-section {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
+<div class="hero-about">
+    <h1 class="display-4 fw-bold mb-4">
+        <i class="fas fa-cat me-3"></i>
+        O Cat Facts App
+    </h1>
+    <p class="lead mb-0">
+        Zaawansowana aplikacja webowa do odkrywania fascynujących faktów o kotach,<br>
+        stworzona z wykorzystaniem najnowszych technologii Microsoft i zasad SOLID.
+    </p>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-magic"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Losowanie Faktów</h4>
+            <p class="text-muted">
+                Pobieraj losowe fakty o kotach z zewnętrznego API catfact.ninja. 
+                Każdy fakt to nowa przygoda!
+            </p>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Ulubione & Oceny</h4>
+            <p class="text-muted">
+                Oznaczaj fakty jako ulubione i oceniaj je w skali 1-5 gwiazdek. 
+                Twoje preferencje są ważne!
+            </p>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Zaawansowane Filtrowanie</h4>
+            <p class="text-muted">
+                Filtruj fakty według kategorii, ocen, dat i słów kluczowych. 
+                Znajdź dokładnie to, czego szukasz!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Technology Stack -->
+<div class="info-section">
+    <h2 class="mb-4">
+        <i class="fas fa-code me-2 text-primary"></i>
+        Stos Technologiczny
+    </h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h5 class="fw-bold mb-3">Backend</h5>
+            <div class="mb-3">
+                <span class="tech-badge">ASP.NET Core 9.0</span>
+                <span class="tech-badge">C# 12</span>
+                <span class="tech-badge">Entity Framework Core</span>
+                <span class="tech-badge">Dependency Injection</span>
+                <span class="tech-badge">Repository Pattern</span>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h5 class="fw-bold mb-3">Frontend</h5>
+            <div class="mb-3">
+                <span class="tech-badge">Bootstrap 5.3</span>
+                <span class="tech-badge">Font Awesome 6</span>
+                <span class="tech-badge">Responsive Design</span>
+                <span class="tech-badge">Modern CSS</span>
+                <span class="tech-badge">JavaScript ES6+</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SOLID Principles -->
+<div class="info-section">
+    <h2 class="mb-4">
+        <i class="fas fa-cube me-2 text-primary"></i>
+        Zasady SOLID
+    </h2>
+    
+    <div class="solid-principle">
+        <h5 class="fw-bold text-primary">S - Single Responsibility Principle</h5>
+        <p class="mb-0">Każda klasa ma jedną odpowiedzialność: CatFactService (API), FileService (pliki), CatFactRepository (dane).</p>
+    </div>
+    
+    <div class="solid-principle">
+        <h5 class="fw-bold text-primary">O - Open/Closed Principle</h5>
+        <p class="mb-0">Klasy są otwarte na rozszerzenia, zamknięte na modyfikacje. Łatwo dodać nowe funkcjonalności.</p>
+    </div>
+    
+    <div class="solid-principle">
+        <h5 class="fw-bold text-primary">L - Liskov Substitution Principle</h5>
+        <p class="mb-0">Implementacje interfejsów można wymieniać bez wpływu na działanie aplikacji.</p>
+    </div>
+    
+    <div class="solid-principle">
+        <h5 class="fw-bold text-primary">I - Interface Segregation Principle</h5>
+        <p class="mb-0">Interfejsy są małe i specjalizowane (ICatFactService, ICatFactRepository, IFileService).</p>
+    </div>
+    
+    <div class="solid-principle">
+        <h5 class="fw-bold text-primary">D - Dependency Inversion Principle</h5>
+        <p class="mb-0">Klasy zależą od abstrakcji (interfejsów), nie od konkretnych implementacji.</p>
+    </div>
+</div>
+
+<!-- Features List -->
+<div class="info-section">
+    <h2 class="mb-4">
+        <i class="fas fa-list-check me-2 text-primary"></i>
+        Funkcjonalności
+    </h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Pobieranie faktów z zewnętrznego API
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Responsywny design (mobile-first)
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    System oceniania (1-5 gwiazdek)
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Oznaczanie ulubionych faktów
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Automatyczna kategoryzacja faktów
+                </li>
+            </ul>
+        </div>
+        
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Zaawansowane filtrowanie i wyszukiwanie
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Eksport danych do pliku tekstowego
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Statystyki i analytics
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Obsługa błędów i walidacja
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check text-success me-2"></i>
+                    Nowoczesny, intuicyjny interfejs
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- API Information -->
+<div class="info-section">
+    <h2 class="mb-4">
+        <i class="fas fa-plug me-2 text-primary"></i>
+        Źródło Danych
+    </h2>
+    
+    <p class="mb-3">
+        Aplikacja korzysta z publicznego API <strong>catfact.ninja</strong>, które dostarcza losowe fakty o kotach.
+        API jest darmowe i nie wymaga klucza dostępu.
+    </p>
+    
+    <div class="d-flex gap-3 flex-wrap">
+        <a href="https://catfact.ninja" target="_blank" class="btn btn-outline-primary">
+            <i class="fas fa-external-link-alt me-2"></i>
+            Odwiedź catfact.ninja
+        </a>
+        
+        <a href="https://github.com/alexwohlbruck/cat-facts" target="_blank" class="btn btn-outline-secondary">
+            <i class="fab fa-github me-2"></i>
+            GitHub API
+        </a>
+    </div>
+</div>
+
+<!-- Contact/Credits -->
+<div class="info-section text-center">
+    <h2 class="mb-4">
+        <i class="fas fa-heart me-2 text-danger"></i>
+        Stworzone z Miłością do Kotów
+    </h2>
+    
+    <p class="lead mb-4">
+        Ta aplikacja została stworzona jako demonstracja nowoczesnych technologii webowych 
+        i najlepszych praktyk programowania.
+    </p>
+    
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <span class="badge bg-primary fs-6 py-2 px-3">
+            <i class="fas fa-code me-1"></i>
+            Clean Code
+        </span>
+        <span class="badge bg-success fs-6 py-2 px-3">
+            <i class="fas fa-mobile-alt me-1"></i>
+            Responsive
+        </span>
+        <span class="badge bg-warning fs-6 py-2 px-3">
+            <i class="fas fa-rocket me-1"></i>
+            Modern
+        </span>
+        <span class="badge bg-info fs-6 py-2 px-3">
+            <i class="fas fa-shield-alt me-1"></i>
+            Secure
+        </span>
+    </div>
+</div>
