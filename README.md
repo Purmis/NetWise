@@ -1,4 +1,21 @@
-# Cat Facts Web App 🐱
+# NetWise - Cat Facts Application Suite 🐱
+
+**Kompletny pakiet aplikacji do zarządzania faktami o kotach** - od prostej aplikacji konsolowej po zaawansowaną aplikację webową z pełną architekturą enterprise.
+
+## 📦 Zawartość projektu
+
+### 1. **CatFactsApp** - Aplikacja konsolowa
+Profesjonalna aplikacja konsolowa z zaawansowanym logowaniem i obsługą błędów.
+
+### 2. **CatFactsWebApp** - Aplikacja webowa (główna)
+Zaawansowana, responsywna aplikacja webowa ASP.NET Core z czystą architekturą zgodną z zasadami SOLID.
+
+### 3. **CatFactsApp.Tests** - Testy jednostkowe
+Kompleksowy pakiet 35 testów jednostkowych pokrywających wszystkie komponenty.
+
+---
+
+# 🌐 Cat Facts Web App (Główna aplikacja)
 
 Zaawansowana, responsywna aplikacja webowa ASP.NET Core do pobierania, wyświetlania i zarządzania faktami o kotach z czystą architekturą zgodną z zasadami SOLID.
 
